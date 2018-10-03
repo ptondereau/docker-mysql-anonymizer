@@ -1,0 +1,24 @@
+version: 3
+
+services:
+  anonymizer:
+    build: ./
+    depends_on:
+      - mariadb
+    networks:
+      - backend
+
+  mariadb:
+    image: mariadb:10.2
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: temp
+      MYSQL_USER: temp
+      MYSQL_PASSWORD: secret
+    logging:
+      driver: syslog
+      options:
+        tag: "{{.DaemonName}}(image={{.ImageName}};name={{.Name}};id={{.ID}})"
+    networks:
+      - backend
+    restart: on-failure
